@@ -1,0 +1,51 @@
+public class Solution {
+    public int LeastInterval(char[] tasks, int n) 
+    {
+        IDictionary<char, int> dict = new Dictionary<char, int>();
+        SortedSet<(int, char)> maxHeap = new SortedSet<(int, char)>(Comparer<(int, char)>.Create((a,b) => {
+            var diff = b.Item1.CompareTo(a.Item1);
+            return diff == 0 ? a.Item2.CompareTo(b.Item2) : diff;
+        }));
+        int resultantTime = 0;
+        for(int i = 0; i < tasks.Length; i++)
+        {
+            if(!dict.ContainsKey(tasks[i]))
+            {
+                dict.Add(tasks[i], 1);
+            }
+            else
+            {
+                dict[tasks[i]]++;
+            }
+        }
+        
+        foreach(var pair in dict)
+        {
+            maxHeap.Add((pair.Value, pair.Key));
+        }
+        int value = 0;
+        Queue<(int, char, int)> queue = new Queue<(int, char, int)>(); // Queue<(remainginFrequency, nextTimeforThisFreq)>
+        while(maxHeap.Count > 0 || queue.Count > 0)
+        {
+            resultantTime++;
+            if(maxHeap.Count > 0)
+            {
+                var maxEle = maxHeap.Min;
+                maxHeap.Remove(maxEle);
+                value = maxEle.Item1;
+                if(--value > 0)
+                {
+                    queue.Enqueue((value, maxEle.Item2, resultantTime + n));
+                }
+            }
+            
+            if(queue.Count > 0 && queue.Peek().Item3 <= resultantTime)
+            {
+                var front = queue.Dequeue();
+                maxHeap.Add((front.Item1, front.Item2));
+            }
+        }
+        
+        return resultantTime;
+    }
+}

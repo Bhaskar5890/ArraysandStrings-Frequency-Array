@@ -1,0 +1,13 @@
+public class Solution {
+    public int NumIdenticalPairs(int[] nums) 
+    {
+        int count = 0;
+        int[] frequency = new int[101];
+         for(int n = 0; n < nums.Length; n++)
+         {
+            frequency[nums[n]] = frequency[nums[n]] + 1;
+            count += frequency[nums[n]] -1;
+         }
+        return count;
+    }
+}
